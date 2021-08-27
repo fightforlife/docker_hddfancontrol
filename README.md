@@ -1,3 +1,6 @@
+switched to docker pull ghcr.io/fightforlife/docker_hddfancontrol:master
+
+
 # docker_hddfancontrol
 simple Docker image for hddfancontrol by desbma
 https://github.com/desbma/hddfancontrol
