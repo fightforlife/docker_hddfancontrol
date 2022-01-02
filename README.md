@@ -40,4 +40,6 @@ services:
 - [X] Split the $ARGS environment variable into the individual configuration paramters
 - [ ] Find a way to get rid of the priviliged mode and use the devices directly
 - [X] incoperate lm-sensors into the container including the kernel modules
+- [ ] run and expose hddtemp daemon
+- [ ] make way of fetching temp a config
 
