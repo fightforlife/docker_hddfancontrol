@@ -5,7 +5,7 @@ FROM python:slim-buster
 RUN apt-get update
 
 #install needed packages
-RUN apt-get install -y smartmontools hdparm hddtemp fancontrol
+RUN apt-get install -y smartmontools hdparm hddtemp fancontrol lm-sensors
 
 #install hddfancontrol
 RUN pip3 install hddfancontrol
