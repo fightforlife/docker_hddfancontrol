@@ -7,31 +7,37 @@ This is a docker image which includes the following programs to run **hddfancont
 - hdparm - old way of spinning down drives
 - hddtemp - to get hddtemps
 - fancontrol - to control PWM fan speed
-
-
-### Current prerequisite
-Since it is not good measure to load kernel modules inside docker you need to do the following before usign this container
-- Installing the `lm-sensors` package for your distribution
-- run `sensors-detect` with standard configuration
-- load the detected kernel modules by adding them to /etc/modules (This can be done automatically in the step above)
-
+- lm-sensors - package for pwm sensor detect
 
 ### Docker compose
-- The environment variable ARGS is used to give the needed paramters to hddfancontrol
 - currently privbiliged mode is used, since I didnt find an easy way to bind the sysfs hwmon instances 
 ```
-version: "2"
+version: "3"
 services:
   hddfancontrol:
-    image: fred92/hddfancontrol:latest
+    image: fred92/hddfancontrol:master
     restart: unless-stopped
+    volumes:
+      - /lib/modules:/lib/modules:ro
     privileged: true
+    cap_add:
+      - SYS_MODULE
     environment:
-      - ARGS=-d /dev/sdb /dev/sdc /dev/sdd -p /sys/class/hwmon/hwmon2/pwm1 /sys/class/hwmon/hwmon2/pwm2 --pwm-start-value 70 80 --pwm-stop-value 20 30 --min-fan-speed-prct 0 -i 60 --spin-down-time 600 -l /var/log/hddfancontrol.log --smartctl
+      - DEVICES=/dev/sdb1 /dev/sdc1 /dev/sdd1
+      - PWM_DEVICES=/sys/class/hwmon/hwmon2/pwm1 /sys/class/hwmon/hwmon2/pwm2
+      - PWM_START=70 80
+      - PWM_STOP=20 30
+      - MIN_TEMP=40
+      - MAX_TEMP=60
+      - MIN_FAN=0
+      - INTERVALL=60
+      - SPINDOWN_TIME=900
+      - LOG_PATH=/var/log/hddfancontrol.log
+      
 ```
 
 ### ToDo
-- [ ] Split the $ARGS environment variable into the individual configuration paramters
+- [X] Split the $ARGS environment variable into the individual configuration paramters
 - [ ] Find a way to get rid of the priviliged mode and use the devices directly
-- [ ] incoperate lm-sensors into the container including the kernel modules
+- [X] incoperate lm-sensors into the container including the kernel modules
 
