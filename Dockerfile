@@ -13,5 +13,5 @@ RUN pip3 install hddfancontrol
 #start hddtemp daemon and expose port
 #EXPOSE 7634
 #CMD hddtemp -q -d -F /dev/sd*
-
-CMD hddfancontrol $ARGS
+COPY start_services.sh /usr/local/bin
+CMD /usr/local/bin/start_services.sh $ARGS
