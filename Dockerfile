@@ -14,4 +14,5 @@ RUN pip3 install hddfancontrol
 #EXPOSE 7634
 #CMD hddtemp -q -d -F /dev/sd*
 COPY start_services.sh /usr/local/bin
-CMD /usr/local/bin/start_services.sh $ARGS
+RUN chmod +x /usr/local/bin/start_services.sh
+CMD /usr/local/bin/start_services.sh
