@@ -4,7 +4,7 @@
 sensors-detect --auto | sed -n '/# Chip drivers/,/#----cut here----/{//!p;}' | xargs -n1 modprobe
 
 #create argument array
-args=()
+declare -A args
 
 [[ -z $DEVICES ]] && args+=(--drives $DEVICES)
 [[ -z $PWM_DEVICES ]] && args+=(--pwm $PWM_DEVICES)
@@ -18,6 +18,7 @@ args=()
 [[ -z $SPINDOWN_TIME ]] && args+=(--spin-down-time $SPINDOWN_TIME)
 [[ -z $LOG_PATH ]] && args+=(-l $LOG_PATH)
 
+echo ${args[@]}
 
 hddfancontrol ${args[@]} &
 
