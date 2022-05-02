@@ -6,8 +6,8 @@ sensors-detect --auto | sed -n '/# Chip drivers/,/#----cut here----/{//!p;}' | x
 #create argument array
 args=()
 
-[[ -z $DEVICES ]] && args+=(-d $DEVICES)
-[[ -z $PWM_DEVICES ]] && args+=(-p $PWM_DEVICES)
+[[ -z $DEVICES ]] && args+=(--drives $DEVICES)
+[[ -z $PWM_DEVICES ]] && args+=(--pwm $PWM_DEVICES)
 [[ -z $PWM_START ]] && args+=(--pwm-start-value $PWM_START)
 [[ -z $PWM_STOP ]] && args+=(--pwm-stop-value $PWM_STOP)
 [[ -z $MIN_TEMP ]] && args+=(--min-temp $MIN_TEMP)
@@ -19,7 +19,7 @@ args=()
 [[ -z $LOG_PATH ]] && args+=(-l $LOG_PATH)
 
 
-hddfancontrol "${args[@]}" &
+hddfancontrol ${args[@]} &
 
 # Wait for any process to exit
 wait -n
