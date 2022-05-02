@@ -31,8 +31,9 @@ services:
       - MAX_TEMP=60
       - MIN_FAN=0
       - INTERVALL=60
-      - SPINDOWN_TIME=900
-      - LOG_PATH=/var/log/hddfancontrol.log
+      - SPINDOWN_TIME=900 (optional)
+      - TEMP_QUERY_MODE=smartctl
+      - LOG_PATH=/var/log/hddfancontrol.log (optional)
       
 ```
 

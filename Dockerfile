@@ -1,5 +1,5 @@
 #use official slim python image
-FROM python:slim-buster
+FROM python:slim
 
 #update repository
 RUN apt-get update
