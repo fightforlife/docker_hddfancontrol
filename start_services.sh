@@ -3,19 +3,23 @@
 #detect sensors and load modules
 sensors-detect --auto | sed -n '/# Chip drivers/,/#----cut here----/{//!p;}' | xargs -n1 modprobe
 
-hddfancontrol -d $DEVICES  \
-              -p $PWM_DEVICES \
-              --pwm-start-value $PWM_START \
-              --pwm-stop-value $PWM_STOP \
-              --min-temp $MIN_TEMP \
-              --max-temp $MAX_TEMP \
-              --min-fan-speed-prct $MIN_FAN \
-              -i $INTERVALL \
-`if [ -z $SPINDOWN_TIME ]; then echo "--spin-down-time $SPINDOWN_TIME \"; fi`
-              --$TEMP_QUERY_MODE \
-`if [ -z $LOG_PATH ]; then echo "-l $LOG_PATH \"; fi`             
-              &
+#create argument array
+args=()
 
+args+=(-d $DEVICES)
+args+=(-p $PWM_DEVICES)
+args+=(--pwm-start-value $PWM_START)
+args+=(--pwm-stop-value $PWM_STOP)
+args+=(--min-temp $MIN_TEMP)
+args+=(--max-temp $MAX_TEMP)
+args+=(--min-fan-speed-prct $MIN_FAN)
+args+=(-i $INTERVALL)
+args+=(--$TEMP_QUERY_MODE)
+args+=(--spin-down-time $SPINDOWN_TIME)
+args+=(-l $LOG_PATH)
+
+
+hddfancontrol "${params[@]}" &
 
 # Wait for any process to exit
 wait -n
