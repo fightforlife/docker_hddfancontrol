@@ -4,7 +4,7 @@
 sensors-detect --auto | sed -n '/# Chip drivers/,/#----cut here----/{//!p;}' | xargs -n1 modprobe
 
 #create argument array
-declare -A args
+declare -a args=()
 
 [[ -z $DEVICES ]] && args+=(--drives $DEVICES)
 [[ -z $PWM_DEVICES ]] && args+=(--pwm $PWM_DEVICES)
