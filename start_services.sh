@@ -11,11 +11,27 @@ hddfancontrol -d $DEVICES  \
               --max-temp $MAX_TEMP \
               --min-fan-speed-prct $MIN_FAN \
               -i $INTERVALL \
+            if [ ! -z $SPINDOWN_TIME ]
+            then 
               --spin-down-time $SPINDOWN_TIME \
-              --smartctl \
+            else
+            fi
+              --$TEMP_QUERY_MODE \
+            if [ ! -z $LOG_PATH ]
+            then               
               -l $LOG_PATH \
+            else
+            fi
               &
   
+if [ ! -z $1 ] 
+then 
+    : # $1 was given
+else
+    : # $1 was not given
+fi
+
+
 # Wait for any process to exit
 wait -n
   
