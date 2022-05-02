@@ -6,20 +6,20 @@ sensors-detect --auto | sed -n '/# Chip drivers/,/#----cut here----/{//!p;}' | x
 #create argument array
 args=()
 
-args+=(-d $DEVICES)
-args+=(-p $PWM_DEVICES)
-args+=(--pwm-start-value $PWM_START)
-args+=(--pwm-stop-value $PWM_STOP)
-args+=(--min-temp $MIN_TEMP)
-args+=(--max-temp $MAX_TEMP)
-args+=(--min-fan-speed-prct $MIN_FAN)
-args+=(-i $INTERVALL)
-args+=(--$TEMP_QUERY_MODE)
-args+=(--spin-down-time $SPINDOWN_TIME)
-args+=(-l $LOG_PATH)
+[[ -z $DEVICES ]] && args+=(-d $DEVICES)
+[[ -z $PWM_DEVICES ]] && args+=(-p $PWM_DEVICES)
+[[ -z $PWM_START ]] && args+=(--pwm-start-value $PWM_START)
+[[ -z $PWM_STOP ]] && args+=(--pwm-stop-value $PWM_STOP)
+[[ -z $MIN_TEMP ]] && args+=(--min-temp $MIN_TEMP)
+[[ -z $MAX_TEMP ]] && args+=(--max-temp $MAX_TEMP)
+[[ -z $MIN_FAN ]] && args+=(--min-fan-speed-prct $MIN_FAN)
+[[ -z $INTERVALL ]] && args+=(-i $INTERVALL)
+[[ -z $TEMP_QUERY_MODE ]] && args+=(--$TEMP_QUERY_MODE)
+[[ -z $SPINDOWN_TIME ]] && args+=(--spin-down-time $SPINDOWN_TIME)
+[[ -z $LOG_PATH ]] && args+=(-l $LOG_PATH)
 
 
-hddfancontrol "${params[@]}" &
+hddfancontrol "${args[@]}" &
 
 # Wait for any process to exit
 wait -n

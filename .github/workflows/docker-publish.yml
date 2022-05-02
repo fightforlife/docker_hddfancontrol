@@ -9,11 +9,13 @@ on:
   push:
     branches:
       - 'dev'
+      - 'master'
     tags:
       - 'v*'
   pull_request:
     branches:
       - 'dev'
+      - 'master'
 
 #  schedule:
 #    - cron: '25 10 * * *'
