@@ -3,7 +3,7 @@ simple Docker image for hddfancontrol by desbma
 https://github.com/desbma/hddfancontrol
 
 This is a docker image which includes the following programs to run **hddfancontrol** by desbma.
-- smartmontools - needed for the new --smartctl option, which uses smartmontolls instead of hdparm to spindown drives
+- smartmontools - needed for the --smartctl option, which uses smartmontolls instead of hdparm to spindown drives
 - hdparm - old way of spinning down drives
 - hddtemp - to get hddtemps
 - fancontrol - to control PWM fan speed
@@ -11,6 +11,7 @@ This is a docker image which includes the following programs to run **hddfancont
 
 ### Docker compose
 - currently privbiliged mode is used, since I didnt find an easy way to bind the sysfs hwmon instances 
+- all ENV variables are optional, but hddfancontrol will complain when something important is missing.
 ```
 version: "3"
 services:
@@ -31,9 +32,9 @@ services:
       - MAX_TEMP=60
       - MIN_FAN=0
       - INTERVALL=60
-      - SPINDOWN_TIME=900 (optional)
+      - SPINDOWN_TIME=900 (optional!)
       - TEMP_QUERY_MODE=smartctl
-      - LOG_PATH=/var/log/hddfancontrol.log (optional)
+      - LOG_PATH=/var/log/hddfancontrol.log (optional!)
       
 ```
 
@@ -42,5 +43,5 @@ services:
 - [ ] Find a way to get rid of the priviliged mode and use the devices directly
 - [X] incoperate lm-sensors into the container including the kernel modules
 - [ ] run and expose hddtemp daemon
-- [ ] make way of fetching temp a config
+- [X] make way of fetching temp a config
 
