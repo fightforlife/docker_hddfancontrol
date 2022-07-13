@@ -5,17 +5,11 @@
 
 name: Publish Docker image
 
-on:
-  push:
-    branches:
-      - 'dev'
-      - 'master'
-    tags:
-      - 'v*'
-  pull_request:
-    branches:
-      - 'dev'
-      - 'master'
+on: 
+  workflow_dispatch:
+
+  schedule:
+    - cron:  '0 0 * * 0'
 
 #  schedule:
 #    - cron: '25 10 * * *'
