@@ -31,10 +31,12 @@ services:
       - MIN_TEMP=40
       - MAX_TEMP=60
       - MIN_FAN=0
-      - INTERVALL=60
-      - SPINDOWN_TIME=900 (optional!)
+      - INTERVALL=10  (should be low if CPU is included)
+      - SPINDOWN_TIME=900
       - TEMP_QUERY_MODE=smartctl
-      - LOG_PATH=/var/log/hddfancontrol.log (optional!)
+      - LOG_PATH=/var/log/hddfancontrol.log
+      - CPU_TEMP_RANGE=45 60
+      - CPU_TEMP_PROBE=/sys/devices/platform/coretemp.0/hwmon/hwmon1/temp1_input
       
 ```
 

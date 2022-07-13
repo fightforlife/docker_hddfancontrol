@@ -17,6 +17,8 @@ declare -a args=()
 [[ ! -z $TEMP_QUERY_MODE ]] && args+=(--$TEMP_QUERY_MODE)
 [[ ! -z $SPINDOWN_TIME ]] && args+=(--spin-down-time $SPINDOWN_TIME)
 [[ ! -z $LOG_PATH ]] && args+=(-l $LOG_PATH)
+[[ ! -z $CPU_TEMP_PROBE ]] && args+=(--cpu-sensor $CPU_TEMP_PROBE)
+[[ ! -z $CPU_TEMP_RANGE ]] && args+=(--cpu-temp-range $CPU_TEMP_RANGE)
 
 echo ${args[@]}
 
