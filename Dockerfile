@@ -5,10 +5,16 @@ FROM python:slim
 RUN apt-get update
 
 #install needed packages
-RUN apt-get install -y smartmontools hdparm hddtemp fancontrol lm-sensors kmod
+RUN apt-get install -y smartmontools hdparm hddtemp fancontrol lm-sensors kmod git
 
 #install hddfancontrol
-RUN pip3 install hddfancontrol
+RUN pip3 install setuptools
+RUN git clone https://github.com/desbma/hddfancontrol
+RUN cd hddfancontrol && \
+    chmod +x setup.py && \
+    python3 setup.py install
+RUN rm -rf hddfancontrol
+
 
 #start hddtemp daemon and expose port
 #EXPOSE 7634
