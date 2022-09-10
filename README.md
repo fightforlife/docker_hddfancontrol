@@ -24,17 +24,21 @@ services:
     cap_add:
       - SYS_MODULE
     environment:
-      - DEVICES=/dev/sdb1 /dev/sdc1 /dev/sdd1
-      - PWM_DEVICES=/sys/class/hwmon/hwmon2/pwm1 /sys/class/hwmon/hwmon2/pwm2
-      - PWM_START=70 80
-      - PWM_STOP=20 30
+      - DRIVE_FILEPATHS=/dev/sdb1 /dev/sdc1 /dev/sdd1
+      - FAN_PWM_FILEPATH=/sys/class/hwmon/hwmon2/pwm1 /sys/class/hwmon/hwmon2/pwm2
+      - FAN_START_VALUE=70 80
+      - FAN_STOP_VALUE=20 30
       - MIN_TEMP=40
       - MAX_TEMP=60
-      - MIN_FAN=0
-      - INTERVALL=60
-      - SPINDOWN_TIME=900 (optional!)
-      - TEMP_QUERY_MODE=smartctl
-      - LOG_PATH=/var/log/hddfancontrol.log (optional!)
+      - MIN_FAN_SPEED_PRCT=0
+      - INTERVAL_S=60
+      - CPU_PROBE_FILEPATH=/sys/devices/platform/coretemp.0/hwmon/hwmon0/tempY_input
+      - CPU_TEMP_RANGE=50 70
+      - SPIN_DOWN_TIME_S=900
+      - VERBOSITY=debug
+      - LOG_FILEPATH=/var/log/hddfancontrol.log
+      - TEMP_QUERY_MODE=smartctl  #hddtemp,hdparm,drivetemp,smartctl 
+      
       
 ```
 
