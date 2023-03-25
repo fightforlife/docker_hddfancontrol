@@ -16,7 +16,7 @@ This is a docker image which includes the following programs to run **hddfancont
 version: "3"
 services:
   hddfancontrol:
-    image: fred92/hddfancontrol:master
+    image: ghcr.io/fightforlife/docker_hddfancontrol:master
     restart: unless-stopped
     volumes:
       - /lib/modules:/lib/modules:ro
