@@ -5,7 +5,8 @@ FROM python:slim
 RUN apt-get update
 
 #install needed packages
-RUN apt-get install -y smartmontools hdparm hddtemp fancontrol lm-sensors kmod git
+#hddtemp package is deprecated as of debian bookworm, see https://groups.google.com/g/linux.debian.bugs.dist/c/fRxG4xEJQUs
+RUN apt-get install -y smartmontools hdparm fancontrol lm-sensors kmod git
 
 #install hddfancontrol
 RUN pip3 install setuptools
