@@ -19,12 +19,13 @@ services:
     image: ghcr.io/fightforlife/docker_hddfancontrol:master
     restart: unless-stopped
     volumes:
-      - /lib/modules:/lib/modules:ro
+      - /lib/modules:/lib/modules:ro #needed for hwmon
+      - /dev:/dev:ro #needed for disks by id
     privileged: true
     cap_add:
       - SYS_MODULE
     environment:
-      - DRIVE_FILEPATHS=/dev/sdb1 /dev/sdc1 /dev/sdd1
+      - DRIVE_FILEPATHS=/dev/disk/by-id/ata-SAMSUNG_HD501LJ-part1 /dev/disk/by-id/ata-WDC_WD15EADS-part1 /dev/disk/by-id/ata-ST4000VN006-part1 /dev/disk/by-id/ata-ST4000VN008-part1
       - FAN_PWM_FILEPATH=/sys/class/hwmon/hwmon2/pwm1 /sys/class/hwmon/hwmon2/pwm2
       - FAN_START_VALUE=70 80
       - FAN_STOP_VALUE=20 30
