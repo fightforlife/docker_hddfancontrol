@@ -1,33 +1,32 @@
 #!/bin/bash
+set -euo pipefail
 
-#detect sensors and load modules
-sensors-detect --auto | sed -n '/# Chip drivers/,/#----cut here----/{//!p;}' | xargs -n1 modprobe
-
-#create argument array
-declare -a args=()
-
-[[ ! -z $DRIVE_FILEPATHS ]] && args+=(--drives $DRIVE_FILEPATHS)
-[[ ! -z $FAN_PWM_FILEPATH ]] && args+=(--pwm $FAN_PWM_FILEPATH)
-[[ ! -z $FAN_START_VALUE ]] && args+=(--pwm-start-value $FAN_START_VALUE)
-[[ ! -z $FAN_STOP_VALUE ]] && args+=(--pwm-stop-value $FAN_STOP_VALUE)
-[[ ! -z $MIN_TEMP ]] && args+=(--min-temp $MIN_TEMP)
-[[ ! -z $MAX_TEMP ]] && args+=(--max-temp $MAX_TEMP)
-[[ ! -z $MIN_FAN_SPEED_PRCT ]] && args+=(--min-fan-speed-prct $MIN_FAN_SPEED_PRCT)
-[[ ! -z $INTERVAL_S ]] && args+=(-i $INTERVAL_S)
-[[ ! -z $CPU_PROBE_FILEPATH ]] && args+=(--cpu-sensor $CPU_PROBE_FILEPATH)
-[[ ! -z $CPU_TEMP_RANGE ]] && args+=(--cpu-temp-range $CPU_TEMP_RANGE)
-[[ ! -z $SPIN_DOWN_TIME_S ]] && args+=(--spin-down-time $SPIN_DOWN_TIME_S)
-[[ ! -z $VERBOSITY ]] && args+=(--verbosity $VERBOSITY) #warning,normal,debug
-[[ ! -z $LOG_FILEPATH ]] && args+=(--log-file $LOG_FILEPATH) 
-[[ ! -z $TEMP_QUERY_MODE ]] && args+=(--$TEMP_QUERY_MODE) #hddtemp,hddtemp-daemon,hdparm,drivetemp,smartctl 
+# Create argument array
+declare -a hddfancontrol_args=()
+[[ -n ${DRIVE_FILEPATHS:-} ]] && hddfancontrol_args+=(--drives "$DRIVE_FILEPATHS")
+[[ -n ${FAN_PWM_FILEPATH:-} ]] && hddfancontrol_args+=(--pwm "$FAN_PWM_FILEPATH")
+[[ -n ${MIN_TEMP:-} && -n ${MAX_TEMP:-} ]] && hddfancontrol_args+=(--drive_temp_range "$MIN_TEMP" "$MAX_TEMP")
+[[ -n ${MIN_FAN_SPEED_PRCT:-} ]] && hddfancontrol_args+=(--min_fan_speed_prct "$MIN_FAN_SPEED_PRCT")
+[[ -n ${INTERVAL:-} ]] && hddfancontrol_args+=(--interval "$INTERVAL")
+[[ -n ${HWMONS:-} ]] && hddfancontrol_args+=(--hwmons "$HWMONS")
+[[ -n ${RESTORE_FANS:-} ]] && hddfancontrol_args+=(--restore_fan_settings "$RESTORE_FANS")
 
 
-echo ${args[@]}
+stdbuf -oL hddfancontrol -v "${VERBOSITY:-INFO}" daemon "${hddfancontrol_args[@]}" 2>&1 | sed 's/^/[hddfancontrol] /' &
 
-hddfancontrol ${args[@]} &
 
-# Wait for any process to exit
+# Create argument array
+declare -a hdidle_args=()
+[[ -n ${SPIN_DOWN_TIME_S:-} ]] && hdidle_args+=(-i "$SPIN_DOWN_TIME_S")
+if [[ -n "${DRIVE_FILEPATHS:-}" ]]; then
+    for drive in $DRIVE_FILEPATHS; do
+        hdidle_args+=(-a "$drive")
+        hdidle_args+=(-c ata)
+    done
+fi
+
+
+stdbuf -oL hd-idle "${hdidle_args[@]}" 2>&1 | sed 's/^/[hd-idle] /' &
+
+# Wait for either process to exit
 wait -n
-  
-# Exit with status of process that exited first
-exit $?
