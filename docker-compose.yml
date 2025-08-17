@@ -13,7 +13,7 @@ services:
         #Drive path(s) to get temperature from (ie. `/dev/sdX`).
         #Interface type selectors are also supported (ie. `ata` to
         #select all drives matching `/dev/disk/by-id/ata-*`).      
-      - DRIVES=/dev/disk/by-id/ata-*
+      - DRIVES=/dev/disk/by-id/nvme-SKHynix_HFS512GEJ4X112N_XX
         #PWM filepath(s) with values at which the fan start and stop moving.
         #Use the 'pwm-test' command to find these values.
         #Format is `PWM_PATH:STAT_VAL:STOP_VAL`
@@ -37,7 +37,7 @@ services:
         #Restore fan settings on exit, otherwise the fans are run at full speed on exit.
       - RESTORE_FAN_SETTINGS=true
         #Verbosity fro logging TRACE, DEBUG, INFO, WARN, ERROR
-      - VERBOSITY=INFO
+      - VERBOSITY=TRACE
         #time in seconds till spindown
       - SPIN_DOWN_TIME_S=900
 
