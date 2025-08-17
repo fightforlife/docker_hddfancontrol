@@ -20,15 +20,21 @@ else
         fi
     done
 
-
-    # Wait for all background jobs to complete
     wait
-
-    # Print a success message after all commands have run
     echo "[init] All sensors-detect commands were run successfully."
 fi
 
-# Create argument array
+.
+if [ -z "$PWM" ]; then
+    echo "[init] PWM Fan config is missing. Startup is stopped. "
+    echo "[init] You can now attach the the containers shell and run pwmconfig or hddfancontrol pwm-test"
+    tail -f /dev/null
+else
+    echo "[init] Fans already defined, starting hddfancontrol"
+fi
+
+
+# Create argument array for hddfancontrol
 declare -a hddfancontrol_args=()
 [[ -n ${DRIVES:-} ]] && hddfancontrol_args+=(--drives "$DRIVES")
 [[ -n ${PWM:-} ]] && hddfancontrol_args+=(--pwm "$PWM")
@@ -40,7 +46,7 @@ declare -a hddfancontrol_args=()
 
 stdbuf -oL hddfancontrol -v "${VERBOSITY:-INFO}" daemon "${hddfancontrol_args[@]}" 2>&1 | sed 's/^/[hddfancontrol] /' &
 
-# Create argument array
+# Create argument array for hd-idle
 declare -a hdidle_args=()
 if [[ -n "${VERBOSITY:-}" ]]; then
     hdidle_args+=(-d)
