@@ -1,0 +1,43 @@
+services:
+  hddfancontrol:
+    #image: ghcr.io/fightforlife/docker_hddfancontrol:master
+    build: ./
+    restart: unless-stopped
+    volumes:
+      - /lib/modules:/lib/modules:ro #needed for hwmon
+      - /dev:/dev:ro #needed for disks by id
+    privileged: true
+    cap_add:
+      - SYS_MODULE
+    environment:
+        #Drive path(s) to get temperature from (ie. `/dev/sdX`).
+        #Interface type selectors are also supported (ie. `ata` to
+        #select all drives matching `/dev/disk/by-id/ata-*`).      
+      - DRIVES=/dev/disk/by-id/ata-*
+        #PWM filepath(s) with values at which the fan start and stop moving.
+        #Use the 'pwm-test' command to find these values.
+        #Format is `PWM_PATH:STAT_VAL:STOP_VAL`
+        #(ie. `/sys/class/hwmon/hwmonX/device/pwmY:200:75`)
+      - PWM=/sys/class/hwmon/hwmonX/device/pwmY:200:75
+        #Temperatures in Celcius at which the fan(s) will be set to minimum/maximum speed.
+      - DRIVE_TEMP_RANGE=40 60
+        #Minimum percentage of full fan speed to set the fan to.
+        #Never set to 0 unless you have other fans to cool down your system,
+        #or a case specially designed for passive cooling.      
+      - MIN_FAN_SPEED_PRCT=20
+        #Interval to check temperature and adjust fan speed, ie. '30s', '3min'.
+      - INTERVAL=10s
+        #Also control fan speed according to these additional hwmon temperature probes.
+        #Format is `HWMON_PATH[:TEMP_MIN_SPEED:TEMP_MAX_SPEED]`
+        #(ie. `/sys/devices/platform/coretemp.0/hwmon/hwmonX/tempY_input:45:75`).
+        #If missing, target temperature range will be autodetected or use a default value.
+        #WARNING: Don't use for CPU sensors, unless you have low TDP CPU. You may also need to set
+        #a low value for -i/--interval parameter to react quickly to sudden temperature increase.
+      - HWMONS=/sys/devices/platform/coretemp.0/hwmon/hwmonX/tempY_input:45:75
+        #Restore fan settings on exit, otherwise the fans are run at full speed on exit.
+      - RESTORE_FAN_SETTINGS=true
+        #Verbosity fro logging TRACE, DEBUG, INFO, WARN, ERROR
+      - VERBOSITY=INFO
+        #time in seconds till spindown
+      - SPIN_DOWN_TIME_S=900
+
