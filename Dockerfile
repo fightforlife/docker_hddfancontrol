@@ -9,6 +9,7 @@ RUN apk add --no-cache \
 WORKDIR /app
 RUN git clone https://github.com/desbma/hddfancontrol.git && \
     cd hddfancontrol && \
+    git checkout nvme && \
     cargo build --release
 
 # --- Stage 2: Final Image ---

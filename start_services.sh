@@ -1,6 +1,12 @@
 #!/bin/bash
 set -euo pipefail
 
+#List all available Drives
+echo "[init] List all drives by ID (without partitions)"
+echo "-----------------------------------"
+ls -l /dev/disk/by-id/ | grep -v 'eui\.' | grep -v -- '-part[0-9]'
+echo "-----------------------------------"
+
 # Define a variable to hold the list of modules
 COMMANDS=$(sensors-detect --auto | sed -n '/# Chip drivers/,/#----cut here----/{//!p;}')
 
@@ -24,7 +30,13 @@ else
     echo "[init] All sensors-detect commands were run successfully."
 fi
 
-.
+# list all pwm enabled fans
+echo "[init] List all fans that have pwm*_enable."
+echo "-----------------------------------"
+find /sys/class/hwmon/ -name 'pwm*_enable'
+echo "-----------------------------------"
+
+
 if [ -z "$PWM" ]; then
     echo "[init] PWM Fan config is missing. Startup is stopped. "
     echo "[init] You can now attach the the containers shell and run pwmconfig or hddfancontrol pwm-test"
