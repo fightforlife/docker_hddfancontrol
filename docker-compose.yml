@@ -1,8 +1,9 @@
 services:
-  hddfancontrol:
-    #image: ghcr.io/fightforlife/docker_hddfancontrol:master
-    build: ./
+  app:
+    #image: ghcr.io/fightforlife/docker_hddfancontrol:v2
+    build: .
     restart: unless-stopped
+    read_only: true
     volumes:
       - /lib/modules:/lib/modules:ro #needed for hwmon
       - /dev:/dev:ro #needed for disks by id
@@ -11,33 +12,23 @@ services:
       - SYS_MODULE
     environment:
         #Drive path(s) to get temperature from (ie. `/dev/sdX`).
-        #Interface type selectors are also supported (ie. `ata` to
-        #select all drives matching `/dev/disk/by-id/ata-*`).      
-      - DRIVES=/dev/disk/by-id/nvme-SKHynix_HFS512GEJ4X112N_XX
+      - DRIVES=/dev/disk/by-id/ata-ST4000VN006-3CW104_WW607QXG /dev/disk/by-id/ata-ST4000VN006-3CW104_ZW627CWW /dev/disk/by-id/ata-ST4000VN006-3CW104_ZW627GBQ /dev/disk/by-id/ata-ST4000VN008-2DR166_ZDH397V4 /dev/disk/by-id/ata-WDC_WD15EADS-00S2B0_WD-WCAVY1520871 /dev/disk/by-id/ata-SAMSUNG_HD501LJ_S0MUJ1GP610352
         #PWM filepath(s) with values at which the fan start and stop moving.
         #Use the 'pwm-test' command to find these values.
         #Format is `PWM_PATH:STAT_VAL:STOP_VAL`
-        #(ie. `/sys/class/hwmon/hwmonX/device/pwmY:200:75`)
-      - PWM=/sys/class/hwmon/hwmonX/device/pwmY:200:75
+      - PWM=/sys/class/hwmon/hwmon3/pwm1:200:75 /sys/class/hwmon/hwmon3/pwm4:200:75
         #Temperatures in Celcius at which the fan(s) will be set to minimum/maximum speed.
       - DRIVE_TEMP_RANGE=40 60
-        #Minimum percentage of full fan speed to set the fan to.
-        #Never set to 0 unless you have other fans to cool down your system,
-        #or a case specially designed for passive cooling.      
-      - MIN_FAN_SPEED_PRCT=20
+        #Minimum percentage of full fan speed to set the fan to.   
+      - MIN_FAN_SPEED_PRCT=0
         #Interval to check temperature and adjust fan speed, ie. '30s', '3min'.
       - INTERVAL=10s
         #Also control fan speed according to these additional hwmon temperature probes.
         #Format is `HWMON_PATH[:TEMP_MIN_SPEED:TEMP_MAX_SPEED]`
-        #(ie. `/sys/devices/platform/coretemp.0/hwmon/hwmonX/tempY_input:45:75`).
-        #If missing, target temperature range will be autodetected or use a default value.
-        #WARNING: Don't use for CPU sensors, unless you have low TDP CPU. You may also need to set
-        #a low value for -i/--interval parameter to react quickly to sudden temperature increase.
-      - HWMONS=/sys/devices/platform/coretemp.0/hwmon/hwmonX/tempY_input:45:75
+      - HWMONS=/sys/devices/platform/coretemp.0/hwmon/hwmon2/temp1_input:60:85
         #Restore fan settings on exit, otherwise the fans are run at full speed on exit.
       - RESTORE_FAN_SETTINGS=true
         #Verbosity fro logging TRACE, DEBUG, INFO, WARN, ERROR
       - VERBOSITY=TRACE
         #time in seconds till spindown
-      - SPIN_DOWN_TIME_S=900
-
+      - SPIN_DOWN_TIME_S=600

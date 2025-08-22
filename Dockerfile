@@ -24,7 +24,7 @@ FROM alpine:latest
 # Install only the runtime dependencies
 RUN apk add --no-cache \
     -X http://dl-cdn.alpinelinux.org/alpine/edge/testing sdparm \
-    -X http://dl-cdn.alpinelinux.org/alpine/edge/main smartmontools hdparm sed nvme-cli kmod lm-sensors lm-sensors-sensord lm-sensors-detect coreutils bash
+    -X http://dl-cdn.alpinelinux.org/alpine/edge/main smartmontools hdparm sed nvme-cli kmod lm-sensors lm-sensors-sensord lm-sensors-detect lm-sensors-fancontrol coreutils bash
 
 # Copy the built binary from the builder stage
 COPY --from=builder /app/hddfancontrol/target/release/hddfancontrol /usr/local/bin/hddfancontrol
