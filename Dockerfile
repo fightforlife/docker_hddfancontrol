@@ -3,7 +3,7 @@ FROM alpine:latest AS builder
 
 # Install build dependencies
 RUN apk add --no-cache \
-    -X http://dl-cdn.alpinelinux.org/alpine/edge/testing cargo g++ rust git go build-base
+    -X http://dl-cdn.alpinelinux.org/alpine/edge/testing cargo g++ rust git go
 
 # Clone the repository and build the application
 WORKDIR /app
@@ -15,7 +15,7 @@ RUN git clone https://github.com/desbma/hddfancontrol.git && \
 RUN git clone https://github.com/adelolmo/hd-idle.git && \
     cd hd-idle && \
     git checkout $(git describe --tags $(git rev-list --tags --max-count=1)) && \
-    make
+    go build -o hd-idle hdidle.go main.go
 
 
 # --- Stage 2: Final Image ---
@@ -23,8 +23,8 @@ FROM alpine:latest
 
 # Install only the runtime dependencies
 RUN apk add --no-cache \
-    -X http://dl-cdn.alpinelinux.org/alpine/edge/testing smartmontools hdparm sdparm lm-sensors \
-    -X http://dl-cdn.alpinelinux.org/alpine/edge/main sed nvme-cli kmod lm-sensors coreutils
+    -X http://dl-cdn.alpinelinux.org/alpine/edge/testing sdparm \
+    -X http://dl-cdn.alpinelinux.org/alpine/edge/main smartmontools hdparm sed nvme-cli kmod lm-sensors lm-sensors-sensord lm-sensors-detect coreutils bash
 
 # Copy the built binary from the builder stage
 COPY --from=builder /app/hddfancontrol/target/release/hddfancontrol /usr/local/bin/hddfancontrol
