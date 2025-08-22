@@ -10,7 +10,7 @@ RUN apt-get install -y smartmontools hdparm fancontrol lm-sensors kmod git
 
 #install hddfancontrol
 RUN pip3 install setuptools
-RUN git clone https://github.com/desbma/hddfancontrol
+RUN git clone -b v1 https://github.com/desbma/hddfancontrol
 RUN cd hddfancontrol && \
     chmod +x setup.py && \
     python3 setup.py install
