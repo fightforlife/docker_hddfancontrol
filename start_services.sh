@@ -8,8 +8,8 @@ echo "-----------------------------------"
 ls -l /dev/disk/by-id/ | grep -v 'eui\.' | grep -v -- '-part[0-9]'
 echo "-----------------------------------"
 
-
 # Define a variable to hold the list of modules
+modprobe i2c-dev
 COMMANDS=$(sensors-detect --auto | sed -n '/# Chip drivers/,/#----cut here----/{//!p;}')
 
 
@@ -60,7 +60,7 @@ declare -a hddfancontrol_args=()
 [[ -n ${RESTORE_FAN_SETTINGS:-} ]] && hddfancontrol_args+=(--restore-fan-settings)
 
 echo "[debug] Running hddfancontrol with arguments: hddfancontrol -v "${VERBOSITY:-INFO}" daemon "${hddfancontrol_args[@]}""
-stdbuf -oL hddfancontrol -v "${VERBOSITY:-INFO}" daemon "${hddfancontrol_args[@]}" 2>&1 | sed 's/^/[hddfancontrol] /' &
+stdbuf -o0 hddfancontrol -v "${VERBOSITY:-INFO}" daemon "${hddfancontrol_args[@]}" 2>&1 | sed 's/^/[hddfancontrol] /' &
 
 # Create argument array for hd-idle
 declare -a hdidle_args=()
@@ -76,7 +76,7 @@ if [[ -n "${DRIVES:-}" ]]; then
 fi
 
 echo "[debug] Running hd-idle with arguments: hd-idle "${hdidle_args[@]}""
-stdbuf -oL hd-idle "${hdidle_args[@]}" 2>&1 | sed 's/^/[hd-idle] /' &
+stdbuf -o0 hd-idle "${hdidle_args[@]}" 2>&1 | sed 's/^/[hd-idle] /' &
 
 # Wait for either process to exit
 wait -n
